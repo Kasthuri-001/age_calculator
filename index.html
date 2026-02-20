@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTS Age Calculator 💜</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Playfair+Display:wght@500&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --purple: #7f00ff;
+  --pink: #e100ff;
+  --glass: rgba(255,255,255,0.15);
+  --border: rgba(255,255,255,0.3);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: white;
+}
+
+/* Floating particles */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15), transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(255,255,255,0.12), transparent 40%);
+  animation: float 10s infinite alternate;
+}
+
+@keyframes float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-30px); }
+}
+
+/* Glass card */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+h1 {
+  font-family: 'Righteous', cursive;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  opacity: 0.9;
+  margin-bottom: 25px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.reset {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  margin-top: 10px;
+}
+
+.result {
+  margin-top: 20px;
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.result p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.highlight {
+  font-weight: 600;
+  color: #ffe6ff;
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 22px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>💜 BTS Age Calculator 💜</h1>
+  <div class="subtitle">Discover your life moments, ARMY ✨</div>
+
+  <input type="date" id="dob">
+  <button onclick="calculateAge()">Calculate</button>
+  <button class="reset" onclick="resetCalc()">Reset</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+function calculateAge() {
+  const dobInput = document.getElementById("dob").value;
+  const result = document.getElementById("result");
+
+  if (!dobInput) {
+    result.innerHTML = "<p>Please select your date of birth 💜</p>";
+    return;
+  }
+
+  const dob = new Date(dobInput);
+  const today = new Date();
+
+  if (dob > today) {
+    result.innerHTML = "<p>Date cannot be in the future 🌸</p>";
+    return;
+  }
+
+  let years = today.getFullYear() - dob.getFullYear();
+  let months = today.getMonth() - dob.getMonth();
+  let days = today.getDate() - dob.getDate();
+
+  if (days < 0) {
+    months--;
+    days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+  }
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const totalDays = Math.floor((today - dob) / (1000 * 60 * 60 * 24));
+
+  let nextBirthday = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+  if (nextBirthday < today) nextBirthday.setFullYear(today.getFullYear() + 1);
+
+  const daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+
+  const hours = totalDays * 24;
+  const minutes = hours * 60;
+  const seconds = minutes * 60;
+  const weeks = Math.floor(totalDays / 7);
+
+  result.innerHTML = `
+    <p>🎂 Age: <span class="highlight">${years}</span> years, <span class="highlight">${months}</span> months, <span class="highlight">${days}</span> days</p>
+    <p>📆 Total Days Lived: <span class="highlight">${totalDays}</span></p>
+    <p>🎉 Next Birthday: <span class="highlight">${daysUntilBirthday}</span> days (${nextBirthday.toDateString()})</p>
+    <hr style="opacity:0.3">
+    <p>✨ Fun Facts</p>
+    <p>⏱ ${hours.toLocaleString()} hours</p>
+    <p>⏳ ${minutes.toLocaleString()} minutes</p>
+    <p>⚡ ${seconds.toLocaleString()} seconds</p>
+    <p>🗓 ${weeks.toLocaleString()} weeks</p>
+  `;
+}
+
+function resetCalc() {
+  document.getElementById("dob").value = "";
+  document.getElementById("result").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
